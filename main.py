@@ -30,7 +30,9 @@ def route():
     location2 = geolocator.geocode(city2)
     
     coords = ((location1.longitude, location1.latitude), (location2.longitude, location2.latitude))
+    
     route = ors_client.directions(coordinates=coords, profile='driving-car', format='geojson')
+    print(route)
     
     # Create the map
     m = folium.Map(location=[(location1.latitude + location2.latitude) / 2, (location1.longitude + location2.longitude) / 2], zoom_start=6)
