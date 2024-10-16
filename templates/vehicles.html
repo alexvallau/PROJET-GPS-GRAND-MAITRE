@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electric Vehicles</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .vehicle {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Electric Vehicles</h1>
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+    {% if vehicles %}
+        <ul>
+            {% for vehicle in vehicles %}
+            <div class="vehicle">
+                <h2>{{ vehicle.naming.make }} {{ vehicle.naming.model }} {{ vehicle.naming.version }}</h2>
+                <p>Range (Best): {{ vehicle.range.chargetrip_range.best }} km</p>
+                <p>Range (Worst): {{ vehicle.range.chargetrip_range.worst }} km</p>
+            </div>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No vehicles found.</p>
+    {% endif %}
+    <a href="/">Back to Map</a>
+</body>
+</html>
