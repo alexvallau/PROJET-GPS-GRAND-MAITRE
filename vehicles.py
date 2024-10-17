@@ -39,7 +39,7 @@ def get_vehicles():
     if response.status_code == 200:
         vehicles = response.json()['data']['carList']
         # Afficher les données pour vérification
-        print(vehicles)
+       
         return vehicles
     else:
         return []
