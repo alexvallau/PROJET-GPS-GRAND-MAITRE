@@ -120,6 +120,20 @@ def route():
         # Create the map with the modified route
         m = folium.Map(location=[(location1.latitude + location2.latitude) / 2, (location1.longitude + location2.longitude) / 2], zoom_start=6)
         
+        # Add departure city marker
+        folium.Marker(
+            location=[location1.latitude, location1.longitude],
+            popup=f"Departure: {city1}",
+            icon=folium.Icon(color='green')
+        ).add_to(m)
+
+        # Add arrival city marker
+        folium.Marker(
+            location=[location2.latitude, location2.longitude],
+            popup=f"Arrival: {city2}",
+            icon=folium.Icon(color='orange')
+        ).add_to(m)
+
         # Draw the modified route
         folium.PolyLine([(coord[1], coord[0]) for coord in modified_route_coords], color='blue').add_to(m)
         
