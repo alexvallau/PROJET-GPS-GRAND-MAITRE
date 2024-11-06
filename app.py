@@ -20,7 +20,7 @@ ors_client = openrouteservice.Client(key='5b3ce3597851110001cf62480196e265957844
 @app.route('/')
 def index():
     vehicles = get_vehicles()
-    m = folium.Map(location=(45.5236, -122.6750))
+    m = folium.Map(location=(52.2297, 21.0122))
     map_html = m._repr_html_()
     return flask.render_template('index.html', map_html=map_html, vehicles=vehicles, distance=None, vehicle_data=None, error=None)
 
