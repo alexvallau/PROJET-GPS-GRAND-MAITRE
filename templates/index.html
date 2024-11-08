@@ -3,32 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Map Page</title>
+    <title>Projet GPS/BORNES ARIZZI Alexandre</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        h1 {
+            background-color: #f0f3f9;
             color: #333;
-            margin-top: 20px;
-        }
-        p {
-            color: #666;
-            max-width: 600px;
-            text-align: center;
         }
         #map-container {
             position: relative;
-            height: 600px; /* Increased height */
-            width: 800px;  /* Increased width */
+            height: 600px;
+            width: 90%;
+            max-width: 1000px;
             margin-top: 20px;
-            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         #map {
             height: 100%;
@@ -38,84 +28,76 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             z-index: 1000;
-            display: flex;
-            flex-direction: column;
+            width: 250px;
         }
-        label {
-            display: block;
-            margin: 5px 0;
-        }
-        input, select {
-            padding: 5px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: 180px;
-        }
-        button {
-            padding: 5px 10px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .distance-info {
-            margin-top: 10px;
-        }
-        #error {
-            margin-top: 20px;
-            font-size: 18px;
-            color: red;
+        .btn-primary {
+            width: 100%;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to the Map Page</h1>
-    <p>This page displays an interactive map of a specific location. You can zoom in and out to explore the area.</p>
-    <div id="map-container">
-        <form id="routeForm">
-            <label for="city1">City 1:</label>
-            <input type="text" id="city1" name="city1" required>
-            <label for="city2">City 2:</label>
-            <input type="text" id="city2" name="city2" required>
-            <label for="vehicle">Select Vehicle:</label>
-            <select id="vehicle" name="vehicle_id" required>
-                {% for vehicle in vehicles %}
-                <option value="{{ vehicle.id }}">{{ vehicle.naming.make }} {{ vehicle.naming.model }} {{ vehicle.naming.version }}</option>
-                {% endfor %}
-            </select>
-            <button type="submit">Get Route</button>
-            
-            <!-- Distance Section at the bottom -->
-            {% if distance %}
-            <div id="distance" class="distance-info">
-                <label>Distance:</label>
-                <input type="text" value="{{ distance }} km" readonly>
+    <div class="container text-center mt-5">
+        <h1 class="display-4 text-primary">Projet GPS/BORNES ARIZZI Alexandre</h1>
+        <p class="lead">Cette carte affiche les bornes électriques sur votre trajet</p>
+        <a href="https://github.com/alexvallau/PROJET-GPS-GRAND-MAITRE" target="_blank" class="btn btn-outline-dark mt-3">
+            <i class="bi bi-github"></i> Voir sur GitHub
+        </a>
+    </div>
+    
+    <div class="container d-flex justify-content-center">
+        <div id="map-container">
+            <!-- Route Form -->
+            <form id="routeForm" class="p-3 bg-white rounded-3 shadow">
+                <h5 class="mb-3">Planifiez votre trajet</h5>
+                <div class="mb-3">
+                    <label for="city1" class="form-label">Ville de départ:</label>
+                    <input type="text" id="city1" name="city1" class="form-control" placeholder="Entrez le nom de la ville" required>
+                </div>
+                <div class="mb-3">
+                    <label for="city2" class="form-label">Ville de destination:</label>
+                    <input type="text" id="city2" name="city2" class="form-control" placeholder="Entrez le nom de la ville" required>
+                </div>
+                <div class="mb-3">
+                    <label for="vehicle" class="form-label">Sélectionnez le véhicule:</label>
+                    <select id="vehicle" name="vehicle_id" class="form-select" required>
+                        {% for vehicle in vehicles %}
+                        <option value="{{ vehicle.id }}">{{ vehicle.naming.make }} {{ vehicle.naming.model }} {{ vehicle.naming.version }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Obtenir l'itinéraire</button>
+                
+                {% if distance %}
+                <div id="distance" class="distance-info mt-3 text-center">
+                    <label class="fw-bold">Distance:</label>
+                    <input type="text" class="form-control-plaintext" value="{{ distance }} km" readonly>
+                </div>
+                {% endif %}
+            </form>
+
+            <!-- Map Display -->
+            <div id="map">
+                {{ map_html|safe }}
             </div>
-            {% endif %}
-        </form>
-        <div id="map">
-            {{ map_html|safe }}
         </div>
     </div>
-    {% if vehicle_data %}
-   
-    {% endif %}
+
+    <!-- Error Message -->
     {% if error %}
-    <div id="error">
-        Error: {{ error }}
+    <div class="container text-center mt-4">
+        <div id="error" class="alert alert-danger">
+            Erreur: {{ error }}
+        </div>
     </div>
     {% endif %}
+
+    <!-- Bootstrap and Custom JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.getElementById('routeForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -132,4 +114,6 @@
         });
     </script>
 </body>
+
+
 </html>
